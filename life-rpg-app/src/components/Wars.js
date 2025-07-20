@@ -39,6 +39,28 @@ const Wars = ({ wars, weapons, addWar, updateWar, completeQuest }) => {
     }
   };
 
+  const getWeaponIcon = (type) => {
+    switch (type) {
+      case 'skill': return '🎯';
+      case 'ability': return '⚡';
+      case 'matter': return '🔧';
+      default: return '🗡';
+    }
+  };
+
+  const getStatIcon = (stat) => {
+    switch (stat) {
+      case 'health': return '❤️';
+      case 'brain': return '🧠';
+      case 'discipline': return '🏹';
+      case 'social': return '🗣️';
+      case 'combat': return '⚔️';
+      case 'wealth': return '💰';
+      case 'wisdom': return '✨';
+      default: return '📊';
+    }
+  };
+
   const addQuestToNewWar = () => {
     if (newWarQuest.title.trim()) {
       const quest = {
@@ -67,7 +89,8 @@ const Wars = ({ wars, weapons, addWar, updateWar, completeQuest }) => {
 
   const handleAddWar = (e) => {
     e.preventDefault();
-    if (newWar.title.trim() && newWar.quests.length > 0) {
+    if (newWar.title.trim()) {
+      // Allow creating war even without quests
       addWar(newWar);
       setNewWar({
         title: '',
@@ -80,6 +103,30 @@ const Wars = ({ wars, weapons, addWar, updateWar, completeQuest }) => {
       });
       setShowAddWarModal(false);
     }
+  };
+
+  const addQuestToWar = (war, questData) => {
+    const newQuest = {
+      ...questData,
+      id: Date.now() + Math.random(),
+      completed: false,
+      xp: getDifficultyXP(questData.difficulty)
+    };
+    
+    const updatedQuests = [...war.quests, newQuest];
+    updateWar(war.id, { quests: updatedQuests });
+  };
+
+  const editQuestInWar = (war, questId, questData) => {
+    const updatedQuests = war.quests.map(quest =>
+      quest.id === questId ? { ...quest, ...questData, xp: getDifficultyXP(questData.difficulty) } : quest
+    );
+    updateWar(war.id, { quests: updatedQuests });
+  };
+
+  const removeQuestFromWar = (war, questId) => {
+    const updatedQuests = war.quests.filter(quest => quest.id !== questId);
+    updateWar(war.id, { quests: updatedQuests });
   };
 
   const toggleWeaponInWar = (war, weaponId) => {
@@ -187,39 +234,89 @@ const Wars = ({ wars, weapons, addWar, updateWar, completeQuest }) => {
             {/* Quests Tab */}
             {activeWarTab === 'quests' && (
               <div className="space-y-4">
-                <h3 className="text-xl font-bold text-fantasy-gold">War Quests</h3>
-                {war.quests.map(quest => (
-                  <div key={quest.id} className={`rounded-lg p-4 border ${
-                    quest.completed 
-                      ? 'bg-gray-800 bg-opacity-50 border-gray-600' 
-                      : 'bg-fantasy-purple bg-opacity-30 border-fantasy-purple'
-                  }`}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <span className="text-2xl">{getStatIcon(quest.stat)}</span>
-                          <h4 className={`text-lg font-semibold ${quest.completed ? 'line-through' : ''}`}>
-                            {quest.title}
-                          </h4>
-                          {quest.completed && <span className="text-fantasy-green">✅</span>}
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-fantasy-gold">War Quests</h3>
+                  <button
+                    onClick={() => {
+                      const questData = {
+                        title: prompt('Enter quest title:'),
+                        difficulty: 'medium',
+                        stat: 'brain'
+                      };
+                      if (questData.title) {
+                        addQuestToWar(war, questData);
+                      }
+                    }}
+                    className="bg-fantasy-red hover:bg-dark-red text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                  >
+                    + Add Quest
+                  </button>
+                </div>
+                
+                {war.quests.length > 0 ? (
+                  war.quests.map(quest => (
+                    <div key={quest.id} className={`rounded-lg p-4 border ${
+                      quest.completed 
+                        ? 'bg-gray-800 bg-opacity-50 border-gray-600' 
+                        : 'bg-dark-red bg-opacity-30 border-fantasy-red'
+                    }`}>
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <span className="text-2xl">{getStatIcon(quest.stat)}</span>
+                            <h4 className={`text-lg font-semibold ${quest.completed ? 'line-through' : ''}`}>
+                              {quest.title}
+                            </h4>
+                            {quest.completed && <span className="text-fantasy-green">✅</span>}
+                          </div>
+                          <div className="flex items-center space-x-4 text-sm">
+                            <span className={`px-2 py-1 rounded ${getDifficultyColor(quest.difficulty)}`}>
+                              {quest.difficulty} (+{quest.xp} XP)
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex items-center space-x-4 text-sm">
-                          <span className={`px-2 py-1 rounded ${getDifficultyColor(quest.difficulty)}`}>
-                            {quest.difficulty} (+{quest.xp} XP)
-                          </span>
+                        <div className="flex items-center space-x-2">
+                          {!quest.completed && (
+                            <>
+                              <button
+                                onClick={() => {
+                                  const newTitle = prompt('Edit quest title:', quest.title);
+                                  if (newTitle) {
+                                    editQuestInWar(war, quest.id, { ...quest, title: newTitle });
+                                  }
+                                }}
+                                className="bg-fantasy-gold hover:bg-yellow-600 text-black px-3 py-1 rounded text-sm font-medium transition-colors"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (confirm('Remove this quest from the war?')) {
+                                    removeQuestFromWar(war, quest.id);
+                                  }
+                                }}
+                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors"
+                              >
+                                Remove
+                              </button>
+                              <button
+                                onClick={() => completeQuest(quest.id, true, war.id)}
+                                className="bg-fantasy-green hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                              >
+                                Complete
+                              </button>
+                            </>
+                          )}
                         </div>
                       </div>
-                      {!quest.completed && (
-                        <button
-                          onClick={() => completeQuest(quest.id, true, war.id)}
-                          className="bg-fantasy-green hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors ml-4"
-                        >
-                          Complete
-                        </button>
-                      )}
                     </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-gray-400">
+                    <div className="text-4xl mb-2">📜</div>
+                    <p>No quests added yet. Click "Add Quest" to get started!</p>
                   </div>
-                ))}
+                )}
               </div>
             )}
 

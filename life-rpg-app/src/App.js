@@ -7,6 +7,7 @@ import Quests from './components/Quests';
 import Calendar from './components/Calendar';
 import Wars from './components/Wars';
 import Weapons from './components/Weapons';
+import Stats from './components/Stats';
 import Titles from './components/Titles';
 
 // Initial data
@@ -351,6 +352,37 @@ function App() {
     setQuests(prev => [...prev, newQuest]);
   };
 
+  const generateFutureOccurrences = (baseQuest, days = 30) => {
+    const occurrences = [];
+    const repeatCycle = baseQuest.repeatCycle || getRepeatCycle(baseQuest.category);
+    
+    if (repeatCycle === 'none') return occurrences;
+    
+    let daysInterval = 0;
+    switch (repeatCycle) {
+      case 'daily': daysInterval = 1; break;
+      case '3days': daysInterval = 3; break;
+      case 'weekly': daysInterval = 7; break;
+      default: return occurrences;
+    }
+    
+    const startDate = new Date(baseQuest.date);
+    let currentDate = new Date(startDate);
+    currentDate.setDate(currentDate.getDate() + daysInterval);
+    
+    while (currentDate <= new Date(Date.now() + days * 24 * 60 * 60 * 1000)) {
+      occurrences.push({
+        ...baseQuest,
+        id: Date.now() + Math.random() * 1000000,
+        date: currentDate.toISOString().split('T')[0],
+        completed: false
+      });
+      currentDate.setDate(currentDate.getDate() + daysInterval);
+    }
+    
+    return occurrences;
+  };
+
   const addQuest = (questData) => {
     const xp = getDifficultyXP(questData.difficulty, questData.manualXP);
     const repeatCycle = getRepeatCycle(questData.category);
@@ -363,7 +395,11 @@ function App() {
       repeatCycle,
       manualXP: questData.difficulty === 'special' ? questData.manualXP : null
     };
-    setQuests(prev => [...prev, newQuest]);
+    
+    // Generate future occurrences for repeating quests
+    const futureOccurrences = generateFutureOccurrences(newQuest, 30);
+    
+    setQuests(prev => [...prev, newQuest, ...futureOccurrences]);
   };
 
   const addWar = (warData) => {
@@ -401,13 +437,14 @@ function App() {
     { id: 'calendar', label: 'Calendar', icon: '📅' },
     { id: 'wars', label: 'Wars', icon: '⚔️' },
     { id: 'weapons', label: 'Weapons', icon: '🗡' },
+    { id: 'stats', label: 'Stats', icon: '📊' },
     { id: 'titles', label: 'Titles', icon: '👑' }
   ];
 
   const renderActiveTab = () => {
     switch (activeTab) {
       case 'home':
-        return <Home playerData={playerData} />;
+        return <Home playerData={playerData} titles={titles} setActiveTab={setActiveTab} quests={quests} addQuest={addQuest} addWar={addWar} />;
       case 'quests':
         return <Quests quests={quests} addQuest={addQuest} completeQuest={completeQuest} />;
       case 'calendar':
@@ -416,10 +453,12 @@ function App() {
         return <Wars wars={wars} weapons={weapons} addWar={addWar} updateWar={updateWar} completeQuest={completeQuest} />;
       case 'weapons':
         return <Weapons weapons={weapons} addWeapon={addWeapon} deleteWeapon={deleteWeapon} />;
+      case 'stats':
+        return <Stats playerData={playerData} />;
       case 'titles':
         return <Titles titles={titles} />;
       default:
-        return <Home playerData={playerData} />;
+        return <Home playerData={playerData} titles={titles} setActiveTab={setActiveTab} quests={quests} addQuest={addQuest} addWar={addWar} />;
     }
   };
 

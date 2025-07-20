@@ -2,12 +2,14 @@
 
 /* CSS Variables for Fantasy Theme */
 :root {
-  --fantasy-dark: #1a1625;
-  --fantasy-purple: #2d1b69;
-  --fantasy-blue: #3b82f6;
-  --fantasy-gold: #fbbf24;
-  --fantasy-red: #ef4444;
+  --fantasy-dark: #000000;
+  --fantasy-purple: #ff2b2b;
+  --fantasy-blue: #ff2b2b;
+  --fantasy-gold: #ffd700;
+  --fantasy-red: #ff2b2b;
   --fantasy-green: #10b981;
+  --dark-red: #7a1e1e;
+  --fantasy-gray: #1a1a1a;
 }
 
 /* Global Styles */
@@ -23,7 +25,7 @@ body {
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, var(--fantasy-dark) 0%, var(--fantasy-purple) 100%);
+  background: linear-gradient(135deg, var(--fantasy-dark) 0%, var(--dark-red) 100%);
   min-height: 100vh;
   color: white;
 }
@@ -136,8 +138,9 @@ code {
 .bg-fantasy-red { background-color: var(--fantasy-red); }
 
 .bg-gray-600 { background-color: #4b5563; }
-.bg-gray-700 { background-color: #374151; }
-.bg-gray-800 { background-color: #1f2937; }
+.bg-gray-700 { background-color: var(--fantasy-gray); }
+.bg-gray-800 { background-color: var(--fantasy-gray); }
+.bg-dark-red { background-color: var(--dark-red); }
 
 .bg-opacity-20 { background-color: rgba(255, 255, 255, 0.2); }
 .bg-opacity-30 { background-color: rgba(255, 255, 255, 0.3); }
@@ -305,7 +308,7 @@ code {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(to right, var(--fantasy-blue), var(--fantasy-gold));
+  background: linear-gradient(to right, var(--fantasy-red), var(--fantasy-gold));
   border-radius: 9999px;
   transition: width 0.5s ease;
 }
@@ -317,7 +320,7 @@ code {
   left: 0;
   right: 0;
   background-color: var(--fantasy-dark);
-  border-top: 1px solid var(--fantasy-purple);
+  border-top: 1px solid var(--fantasy-red);
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -344,7 +347,7 @@ code {
 
 .nav-item.active {
   color: var(--fantasy-gold);
-  background-color: var(--fantasy-purple);
+  background-color: var(--dark-red);
 }
 
 .nav-icon {
@@ -519,3 +522,102 @@ code {
 
 /* Resize */
 .resize-none { resize: none; }
+
+/* Modal Styles for Red Theme */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal {
+  background-color: var(--fantasy-dark);
+  border: 2px solid var(--fantasy-red);
+  border-radius: 0.75rem;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--dark-red);
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--fantasy-gold);
+  flex: 1;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: var(--fantasy-red);
+}
+
+.modal-content {
+  padding: 1rem 1.5rem;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid var(--dark-red);
+}
+
+/* Button styles for red theme */
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: 1px solid;
+}
+
+.btn-primary {
+  background-color: var(--fantasy-red);
+  border-color: var(--fantasy-red);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--dark-red);
+  border-color: var(--dark-red);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border-color: var(--dark-red);
+  color: var(--dark-red);
+}
+
+.btn-secondary:hover {
+  background-color: var(--dark-red);
+  color: white;
+}

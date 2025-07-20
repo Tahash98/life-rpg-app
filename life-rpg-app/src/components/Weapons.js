@@ -121,9 +121,9 @@ const Weapons = ({ weapons, addWeapon, deleteWeapon }) => {
                      {getTypeLabel(weapon.type)}
                    </span>
                    <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                     weapon.obtained ? 'bg-green-900 text-green-400' : 'bg-red-900 text-red-400'
+                     weapon.obtained ? 'bg-green-900 text-green-400' : 'bg-yellow-900 text-yellow-400'
                    }`}>
-                     {weapon.obtained ? '✅ Obtained' : '❌ Should Obtain'}
+                     {weapon.obtained ? '✅ Obtained' : '⏳ In Progress'}
                    </span>
                  </div>
                </div>
@@ -245,8 +245,8 @@ const Weapons = ({ weapons, addWeapon, deleteWeapon }) => {
                                  <div className="flex-1">
                    <div className="flex items-center justify-between mb-1">
                      <h3 className="text-lg font-bold text-fantasy-gold">{weapon.name}</h3>
-                     <span className={`text-sm ${weapon.obtained ? 'text-green-400' : 'text-red-400'}`}>
-                       {weapon.obtained ? '✅' : '❌'}
+                     <span className={`text-sm ${weapon.obtained ? 'text-green-400' : 'text-yellow-400'}`}>
+                       {weapon.obtained ? '✅ Obtained' : '⏳ In Progress'}
                      </span>
                    </div>
                    <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${getTypeColor(weapon.type)}`}>
@@ -341,8 +341,8 @@ const Weapons = ({ weapons, addWeapon, deleteWeapon }) => {
                     onChange={(e) => setNewWeapon({...newWeapon, obtained: e.target.value === 'true'})}
                     className="w-full bg-fantasy-purple bg-opacity-30 border border-fantasy-purple rounded-lg px-3 py-2 text-white"
                   >
-                    <option value="true" className="bg-fantasy-dark">✅ Already Obtained</option>
-                    <option value="false" className="bg-fantasy-dark">❌ Should Be Obtained</option>
+                                       <option value="true" className="bg-fantasy-dark">✅ Already Obtained</option>
+                   <option value="false" className="bg-fantasy-dark">⏳ In Progress</option>
                   </select>
                 </div>
               </div>

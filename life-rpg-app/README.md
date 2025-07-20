@@ -7,10 +7,10 @@ Transform your real life into an epic fantasy RPG adventure! Track your quests, 
 ## ✨ Features
 
 ### 🏠 **Home Tab**
-- **Character Level & XP System**: Level up by completing quests (XP required = current level × 100)
-- **Fantasy Stats Tracking**: Health ❤️, Brain 🧠, Discipline 🏹, Social 🗣, Combat ⚔️, Wealth 💰, Wisdom ✨
-- **Discipline Bonus**: Automatically gain +0.5 Discipline for every quest completed
-- **Achievement Summary**: Track total quests completed, wars won, and titles earned
+- **Earned Titles Display**: Show unlocked titles with rarity colors and icons
+- **Quick Actions**: Direct buttons to add quests and start new wars
+- **Today's Quest Preview**: See active quests scheduled for the current day
+- **Navigation Hub**: Central access point to all app features
 
 ### 📜 **Quests Tab**
 - **Quest Management**: Create and complete daily tasks and challenges
@@ -39,9 +39,15 @@ Transform your real life into an epic fantasy RPG adventure! Track your quests, 
 ### 🗡 **Weapons Tab**
 - **Arsenal Management**: Catalog your skills, abilities, and resources
 - **Weapon Types**: Skills 🎯, Abilities ⚡, Matter 🔧
-- **Obtained Status**: Track which weapons you have vs. should obtain
+- **Progress Status**: "✅ Obtained" or "⏳ In Progress" indicators
 - **Detailed Profiles**: Description, strengths, weaknesses, and best use cases
 - **War Integration**: Attach weapons to specific wars and define needed weapons
+
+### 📊 **Stats Tab** (New!)
+- **Character Level & XP**: Visual progress bar with percentage to next level
+- **Fantasy Stats**: All 7 character attributes with icons and progress bars
+- **Adventure Statistics**: Quests completed, discipline bonus tracking
+- **Level Progression**: XP required = current level × 100
 
 ### 👑 **Titles Tab**
 - **Achievement System**: Unlock titles through level progression and war victories
@@ -81,21 +87,45 @@ Transform your real life into an epic fantasy RPG adventure! Track your quests, 
 npm run build
 ```
 
-## 🆕 New Features
+## 🆕 Latest Updates - Red & Black Theme
 
-### ✨ **Enhanced Quest System**
+### 🔴 **Theme Transformation**
+- **Red & Black Design**: Complete visual overhaul with dark red accents
+- **Enhanced UI**: Modern dark RPG aesthetic with red highlights
+- **Updated Navigation**: Red-themed bottom navigation and progress bars
+
+### 🏠 **Redesigned Home Screen**
+- **Earned Titles Section**: Display unlocked titles with rarity colors
+- **Quick Actions**: Direct buttons to add quests and start wars
+- **Today's Quests**: Preview of scheduled quests for the current day
+- **Stats Removed**: Character stats moved to dedicated Stats tab
+
+### 📊 **New Stats Tab**
+- **Level & XP Progress**: Visual progress bar with percentage
+- **Character Attributes**: All 7 stats with icons and mini progress bars
+- **Adventure Statistics**: Quests completed, discipline bonus tracking
+
+### 📜 **Enhanced Quest System**
+- **Auto-Calendar Export**: New quests automatically appear in calendar
+- **30-Day Pre-generation**: Repeating quests scheduled for next month
 - **3 Days Circle Category**: Perfect for habits that don't need daily tracking
 - **Special Difficulty**: Set custom XP rewards for unique achievements
 - **Auto-Repeat**: Daily, 3 Days, and Weekly quests automatically reschedule
 - **Grouped History**: See completed quests organized by category
 
-### 🎯 **Weapon Status Tracking**
-- **Obtained vs Needed**: Clear visual indicators for weapon acquisition status
-- **War Planning**: Define which weapons are needed for specific campaigns
-- **Strategic Overview**: See at a glance what skills you need to develop
+### 🗡 **Weapon Status Enhancement**
+- **In Progress Indicator**: "⏳ In Progress" instead of "Should Obtain"
+- **Visual Status**: Clear indicators in both list and detail views
+- **War Integration**: Enhanced weapons needed functionality
+
+### ⚔️ **War Management Upgrade**
+- **Flexible Creation**: Create wars with or without initial quests
+- **Live Quest Management**: Add, edit, remove quests within war details
+- **Enhanced UI**: Red-themed war interface with better organization
 
 ### 📅 **Smart Calendar**
 - **Auto-Scheduling**: Repeating quests appear automatically on future dates
+- **30-Day Planning**: Future occurrences pre-generated for better planning
 - **Visual Patterns**: Easily spot your consistency streaks and gaps
 
 ## 🎮 How to Use
