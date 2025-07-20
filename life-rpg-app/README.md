@@ -14,20 +14,24 @@ Transform your real life into an epic fantasy RPG adventure! Track your quests, 
 
 ### 📜 **Quests Tab**
 - **Quest Management**: Create and complete daily tasks and challenges
-- **Difficulty Levels**: Easy (5 XP), Medium (10 XP), Hard (15 XP), Badass Hard (20 XP)
-- **Categories**: Daily, Weekly, Side Quest, or War Quest
+- **Difficulty Levels**: Easy (5 XP), Medium (10 XP), Hard (15 XP), Badass Hard (20 XP), Special (Custom XP)
+- **Categories**: Daily, 3 Days Circle, Weekly, Side Quest, or War Quest
+- **Auto-Repeat Logic**: Daily/3 Days/Weekly quests automatically reschedule after completion
+- **Custom XP**: Special difficulty allows manual XP setting (1-100)
 - **Stat Progression**: Each quest improves a specific character stat
-- **Quest History**: View completed quests with completion animations
+- **Categorized History**: Completed quests grouped by category with completion counts
 
 ### 📅 **Calendar Tab**
 - **Monthly Calendar View**: See quest distribution across time
 - **Day Navigation**: Click any day to view scheduled quests
 - **Visual Indicators**: Active quests and completed quests clearly marked
+- **Auto-Scheduling**: Repeating quests automatically appear on future dates
 - **Progress Tracking**: Monitor your consistency and productivity patterns
 
 ### ⚔️ **Wars Tab**
 - **Epic Campaigns**: Create large projects broken down into smaller quests
 - **War Arsenal**: Attach weapons (skills/abilities) to your wars
+- **Weapons Needed**: Define required weapons and track their obtained status
 - **Strategy Planning**: Free-text area for notes and battle plans
 - **Progress Tracking**: Visual progress bars and completion percentages
 - **Reward Titles**: Unlock custom titles when you complete wars
@@ -35,8 +39,9 @@ Transform your real life into an epic fantasy RPG adventure! Track your quests, 
 ### 🗡 **Weapons Tab**
 - **Arsenal Management**: Catalog your skills, abilities, and resources
 - **Weapon Types**: Skills 🎯, Abilities ⚡, Matter 🔧
+- **Obtained Status**: Track which weapons you have vs. should obtain
 - **Detailed Profiles**: Description, strengths, weaknesses, and best use cases
-- **War Integration**: Attach weapons to specific wars for strategic advantage
+- **War Integration**: Attach weapons to specific wars and define needed weapons
 
 ### 👑 **Titles Tab**
 - **Achievement System**: Unlock titles through level progression and war victories
@@ -76,6 +81,23 @@ Transform your real life into an epic fantasy RPG adventure! Track your quests, 
 npm run build
 ```
 
+## 🆕 New Features
+
+### ✨ **Enhanced Quest System**
+- **3 Days Circle Category**: Perfect for habits that don't need daily tracking
+- **Special Difficulty**: Set custom XP rewards for unique achievements
+- **Auto-Repeat**: Daily, 3 Days, and Weekly quests automatically reschedule
+- **Grouped History**: See completed quests organized by category
+
+### 🎯 **Weapon Status Tracking**
+- **Obtained vs Needed**: Clear visual indicators for weapon acquisition status
+- **War Planning**: Define which weapons are needed for specific campaigns
+- **Strategic Overview**: See at a glance what skills you need to develop
+
+### 📅 **Smart Calendar**
+- **Auto-Scheduling**: Repeating quests appear automatically on future dates
+- **Visual Patterns**: Easily spot your consistency streaks and gaps
+
 ## 🎮 How to Use
 
 ### Getting Started
@@ -85,17 +107,22 @@ npm run build
 4. **Build your arsenal** by adding skills and abilities in the Weapons tab
 
 ### Quest Strategy
-- Use **Easy quests** for daily habits and small tasks
+- Use **Daily** for habits you want to build every day
+- Use **3 Days Circle** for habits that need regular but not daily attention
+- Use **Weekly** for bigger tasks or reviews
+- Use **Special difficulty** for unique achievements with custom XP rewards
 - Reserve **Hard** and **Badass Hard** for challenging goals
 - Balance quests across different stats for well-rounded character growth
 - Remember: Every quest completion gives you +0.5 Discipline bonus!
 
 ### War Planning
 1. **Create a war** for any major project or goal
-2. **Break it down** into smaller, manageable war quests
-3. **Attach relevant weapons** to leverage your existing skills
-4. **Use the strategy section** to plan your approach and track insights
-5. **Claim your reward title** when you achieve victory!
+2. **Define weapons needed** to identify skills you need to develop
+3. **Break it down** into smaller, manageable war quests
+4. **Attach relevant weapons** to leverage your existing skills
+5. **Use the strategy section** to plan your approach and track insights
+6. **Monitor weapon acquisition** to track your preparation progress
+7. **Claim your reward title** when you achieve victory!
 
 ### Progression Tips
 - **Consistency beats intensity**: Regular small quests often beat sporadic large ones
@@ -121,8 +148,54 @@ The app uses a dark fantasy theme with:
 ### Built With
 - **React 18**: Modern React with functional components and hooks
 - **Custom CSS**: Fantasy-themed styling with CSS variables
-- **Local Storage**: Browser-based data persistence
+- **Local Storage**: Enhanced data persistence with new data models
 - **Responsive Design**: Mobile-first approach
+
+### Data Models
+**Quest Object**:
+```json
+{
+  "id": "unique-id",
+  "title": "Do 30 pushups",
+  "category": "daily | 3days | weekly | side | war",
+  "difficulty": "easy | medium | hard | badass | special",
+  "manualXP": 30,
+  "xp": 10,
+  "stat": "health | brain | discipline | social | combat | wealth | wisdom",
+  "repeatCycle": "daily | 3days | weekly | none",
+  "date": "2025-07-18",
+  "completed": false
+}
+```
+
+**Weapon Object**:
+```json
+{
+  "id": "unique-id",
+  "name": "Sword of Focus",
+  "type": "skill | ability | matter",
+  "description": "Improves deep work",
+  "strengths": "Great for learning",
+  "weaknesses": "Low in social impact",
+  "bestUse": "Morning work sessions",
+  "obtained": true
+}
+```
+
+**War Object**:
+```json
+{
+  "id": "unique-id",
+  "title": "Master Web Development",
+  "description": "A big project to learn React",
+  "quests": [/* array of War Quests */],
+  "progress": 40,
+  "completed": false,
+  "rewardTitle": "Web Knight",
+  "weaponsNeeded": ["id-of-weapon-1", "id-of-weapon-2"],
+  "strategy": "Learn fundamentals first, then build apps"
+}
+```
 
 ### File Structure
 ```

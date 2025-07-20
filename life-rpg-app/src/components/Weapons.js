@@ -6,31 +6,41 @@ const Weapons = ({ weapons, addWeapon, deleteWeapon }) => {
   const [editingWeapon, setEditingWeapon] = useState(null);
   const [newWeapon, setNewWeapon] = useState({
     name: '',
-    type: 'Skill',
+    type: 'skill',
     description: '',
     strengths: '',
     weakness: '',
-    bestUse: ''
+    bestUse: '',
+    obtained: true
   });
 
-  const weaponTypes = ['Skill', 'Ability', 'Matter'];
+  const weaponTypes = [
+    { value: 'skill', label: 'Skill' },
+    { value: 'ability', label: 'Ability' },
+    { value: 'matter', label: 'Matter' }
+  ];
 
   const getWeaponIcon = (type) => {
     switch (type) {
-      case 'Skill': return '🎯';
-      case 'Ability': return '⚡';
-      case 'Matter': return '🔧';
+      case 'skill': return '🎯';
+      case 'ability': return '⚡';
+      case 'matter': return '🔧';
       default: return '🗡';
     }
   };
 
   const getTypeColor = (type) => {
     switch (type) {
-      case 'Skill': return 'text-blue-400 bg-blue-900';
-      case 'Ability': return 'text-green-400 bg-green-900';
-      case 'Matter': return 'text-purple-400 bg-purple-900';
+      case 'skill': return 'text-blue-400 bg-blue-900';
+      case 'ability': return 'text-green-400 bg-green-900';
+      case 'matter': return 'text-purple-400 bg-purple-900';
       default: return 'text-gray-400 bg-gray-900';
     }
+  };
+
+  const getTypeLabel = (type) => {
+    const typeObj = weaponTypes.find(t => t.value === type);
+    return typeObj ? typeObj.label : type;
   };
 
   const handleAddWeapon = (e) => {
@@ -45,11 +55,12 @@ const Weapons = ({ weapons, addWeapon, deleteWeapon }) => {
       }
       setNewWeapon({
         name: '',
-        type: 'Skill',
+        type: 'skill',
         description: '',
         strengths: '',
         weakness: '',
-        bestUse: ''
+        bestUse: '',
+        obtained: true
       });
       setShowAddModal(false);
     }
@@ -62,7 +73,8 @@ const Weapons = ({ weapons, addWeapon, deleteWeapon }) => {
       description: weapon.description,
       strengths: weapon.strengths,
       weakness: weapon.weakness,
-      bestUse: weapon.bestUse
+      bestUse: weapon.bestUse,
+      obtained: weapon.obtained
     });
     setEditingWeapon(weapon);
     setShowAddModal(true);
@@ -72,11 +84,12 @@ const Weapons = ({ weapons, addWeapon, deleteWeapon }) => {
     setEditingWeapon(null);
     setNewWeapon({
       name: '',
-      type: 'Skill',
+      type: 'skill',
       description: '',
       strengths: '',
       weakness: '',
-      bestUse: ''
+      bestUse: '',
+      obtained: true
     });
     setShowAddModal(false);
   };
@@ -101,12 +114,19 @@ const Weapons = ({ weapons, addWeapon, deleteWeapon }) => {
             </button>
             <div className="flex items-center space-x-3">
               <span className="text-4xl">{getWeaponIcon(weapon.type)}</span>
-              <div>
-                <h1 className="text-3xl font-bold text-fantasy-gold">{weapon.name}</h1>
-                <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getTypeColor(weapon.type)}`}>
-                  {weapon.type}
-                </span>
-              </div>
+                             <div>
+                 <h1 className="text-3xl font-bold text-fantasy-gold">{weapon.name}</h1>
+                 <div className="flex items-center space-x-2 mt-1">
+                   <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getTypeColor(weapon.type)}`}>
+                     {getTypeLabel(weapon.type)}
+                   </span>
+                   <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                     weapon.obtained ? 'bg-green-900 text-green-400' : 'bg-red-900 text-red-400'
+                   }`}>
+                     {weapon.obtained ? '✅ Obtained' : '❌ Should Obtain'}
+                   </span>
+                 </div>
+               </div>
             </div>
           </div>
           <div className="flex space-x-2">
@@ -222,12 +242,17 @@ const Weapons = ({ weapons, addWeapon, deleteWeapon }) => {
             >
               <div className="flex items-center space-x-3 mb-4">
                 <span className="text-3xl">{getWeaponIcon(weapon.type)}</span>
-                <div className="flex-1">
-                  <h3 className="text-lg font-bold text-fantasy-gold">{weapon.name}</h3>
-                  <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${getTypeColor(weapon.type)}`}>
-                    {weapon.type}
-                  </span>
-                </div>
+                                 <div className="flex-1">
+                   <div className="flex items-center justify-between mb-1">
+                     <h3 className="text-lg font-bold text-fantasy-gold">{weapon.name}</h3>
+                     <span className={`text-sm ${weapon.obtained ? 'text-green-400' : 'text-red-400'}`}>
+                       {weapon.obtained ? '✅' : '❌'}
+                     </span>
+                   </div>
+                   <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${getTypeColor(weapon.type)}`}>
+                     {getTypeLabel(weapon.type)}
+                   </span>
+                 </div>
               </div>
               
               <p className="text-gray-300 text-sm mb-4 line-clamp-3">{weapon.description}</p>
@@ -302,10 +327,22 @@ const Weapons = ({ weapons, addWeapon, deleteWeapon }) => {
                     className="w-full bg-fantasy-purple bg-opacity-30 border border-fantasy-purple rounded-lg px-3 py-2 text-white"
                   >
                     {weaponTypes.map(type => (
-                      <option key={type} value={type} className="bg-fantasy-dark">
-                        {getWeaponIcon(type)} {type}
+                      <option key={type.value} value={type.value} className="bg-fantasy-dark">
+                        {getWeaponIcon(type.value)} {type.label}
                       </option>
                     ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Obtained Status</label>
+                  <select
+                    value={newWeapon.obtained ? 'true' : 'false'}
+                    onChange={(e) => setNewWeapon({...newWeapon, obtained: e.target.value === 'true'})}
+                    className="w-full bg-fantasy-purple bg-opacity-30 border border-fantasy-purple rounded-lg px-3 py-2 text-white"
+                  >
+                    <option value="true" className="bg-fantasy-dark">✅ Already Obtained</option>
+                    <option value="false" className="bg-fantasy-dark">❌ Should Be Obtained</option>
                   </select>
                 </div>
               </div>

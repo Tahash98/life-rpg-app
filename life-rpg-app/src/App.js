@@ -31,32 +31,50 @@ const initialQuests = [
   {
     id: 1,
     title: "Morning Exercise",
-    category: "Daily",
-    difficulty: "Easy",
-    stat: "health",
+    category: "daily",
+    difficulty: "easy",
+    manualXP: null,
     xp: 5,
-    completed: false,
-    date: new Date().toISOString().split('T')[0]
+    stat: "health",
+    repeatCycle: "daily",
+    date: new Date().toISOString().split('T')[0],
+    completed: false
   },
   {
     id: 2,
     title: "Read for 30 minutes",
-    category: "Daily",
-    difficulty: "Medium",
-    stat: "brain",
+    category: "daily",
+    difficulty: "medium",
+    manualXP: null,
     xp: 10,
-    completed: false,
-    date: new Date().toISOString().split('T')[0]
+    stat: "brain",
+    repeatCycle: "daily",
+    date: new Date().toISOString().split('T')[0],
+    completed: false
   },
   {
     id: 3,
     title: "Complete React Project",
-    category: "Side Quest",
-    difficulty: "Hard",
-    stat: "brain",
+    category: "side",
+    difficulty: "hard",
+    manualXP: null,
     xp: 15,
-    completed: false,
-    date: new Date().toISOString().split('T')[0]
+    stat: "brain",
+    repeatCycle: "none",
+    date: new Date().toISOString().split('T')[0],
+    completed: false
+  },
+  {
+    id: 4,
+    title: "Deep Work Session",
+    category: "3days",
+    difficulty: "special",
+    manualXP: 25,
+    xp: 25,
+    stat: "brain",
+    repeatCycle: "3days",
+    date: new Date().toISOString().split('T')[0],
+    completed: false
   }
 ];
 
@@ -69,11 +87,12 @@ const initialWars = [
     progress: 0,
     completed: false,
     quests: [
-      { id: 1, title: "Complete HTML/CSS Course", difficulty: "Medium", xp: 10, stat: "brain", completed: false },
-      { id: 2, title: "Build Portfolio Website", difficulty: "Hard", xp: 15, stat: "brain", completed: false },
-      { id: 3, title: "Learn React Framework", difficulty: "Badass Hard", xp: 20, stat: "brain", completed: false }
+      { id: 1, title: "Complete HTML/CSS Course", difficulty: "medium", xp: 10, stat: "brain", completed: false },
+      { id: 2, title: "Build Portfolio Website", difficulty: "hard", xp: 15, stat: "brain", completed: false },
+      { id: 3, title: "Learn React Framework", difficulty: "badass", xp: 20, stat: "brain", completed: false }
     ],
     weapons: [],
+    weaponsNeeded: [1, 2],
     strategy: "Focus on hands-on projects while learning theory. Practice daily coding."
   }
 ];
@@ -82,20 +101,32 @@ const initialWeapons = [
   {
     id: 1,
     name: "JavaScript Mastery",
-    type: "Skill",
+    type: "skill",
     description: "Advanced knowledge of JavaScript programming language",
     strengths: "Problem solving, web development, automation",
     weakness: "Can be overwhelming for beginners",
-    bestUse: "Building interactive web applications and solving complex programming challenges"
+    bestUse: "Building interactive web applications and solving complex programming challenges",
+    obtained: true
   },
   {
     id: 2,
     name: "Morning Routine",
-    type: "Ability",
+    type: "ability",
     description: "Consistent 6 AM wake-up with exercise and meditation",
     strengths: "Discipline, energy boost, mental clarity",
     weakness: "Requires early sleep schedule",
-    bestUse: "Starting each day with maximum energy and focus"
+    bestUse: "Starting each day with maximum energy and focus",
+    obtained: true
+  },
+  {
+    id: 3,
+    name: "React Framework",
+    type: "skill",
+    description: "Modern React development skills with hooks and state management",
+    strengths: "Component-based architecture, reusable code, modern UI development",
+    weakness: "Steep learning curve, frequent updates",
+    bestUse: "Building dynamic, interactive web applications",
+    obtained: false
   }
 ];
 
@@ -220,12 +251,19 @@ function App() {
         return war;
       }));
     } else {
+      let completedQuest = null;
       setQuests(prev => prev.map(quest => {
         if (quest.id === questId) {
+          completedQuest = quest;
           return { ...quest, completed: true };
         }
         return quest;
       }));
+
+      // Schedule next occurrence for repeating quests
+      if (completedQuest && !completedQuest.completed) {
+        setTimeout(() => scheduleNextOccurrence(completedQuest), 100);
+      }
     }
 
     // Find the quest to get its details
@@ -238,13 +276,25 @@ function App() {
     }
 
     if (quest && !quest.completed) {
+      // Calculate stat bonus based on difficulty
+      const getStatBonus = (difficulty) => {
+        switch (difficulty) {
+          case 'easy': return 1;
+          case 'medium': return 2;
+          case 'hard': return 3;
+          case 'badass': return 4;
+          case 'special': return 2; // Default for special
+          default: return 1;
+        }
+      };
+
       // Update player stats
       setPlayerData(prev => ({
         ...prev,
         xp: prev.xp + quest.xp,
         stats: {
           ...prev.stats,
-          [quest.stat]: prev.stats[quest.stat] + (quest.difficulty === 'Easy' ? 1 : quest.difficulty === 'Medium' ? 2 : quest.difficulty === 'Hard' ? 3 : 4),
+          [quest.stat]: prev.stats[quest.stat] + getStatBonus(quest.difficulty),
           discipline: prev.stats.discipline + 0.5 // Discipline bonus
         },
         questsCompleted: prev.questsCompleted + 1
@@ -252,12 +302,66 @@ function App() {
     }
   };
 
+  const getDifficultyXP = (difficulty, manualXP) => {
+    if (difficulty === 'special') return manualXP || 5;
+    switch (difficulty) {
+      case 'easy': return 5;
+      case 'medium': return 10;
+      case 'hard': return 15;
+      case 'badass': return 20;
+      default: return 5;
+    }
+  };
+
+  const getRepeatCycle = (category) => {
+    switch (category) {
+      case 'daily': return 'daily';
+      case '3days': return '3days';
+      case 'weekly': return 'weekly';
+      default: return 'none';
+    }
+  };
+
+  const addDaysToDate = (dateString, days) => {
+    const date = new Date(dateString);
+    date.setDate(date.getDate() + days);
+    return date.toISOString().split('T')[0];
+  };
+
+  const scheduleNextOccurrence = (quest) => {
+    const repeatCycle = quest.repeatCycle || getRepeatCycle(quest.category);
+    if (repeatCycle === 'none') return;
+
+    let daysToAdd = 0;
+    switch (repeatCycle) {
+      case 'daily': daysToAdd = 1; break;
+      case '3days': daysToAdd = 3; break;
+      case 'weekly': daysToAdd = 7; break;
+      default: return;
+    }
+
+    const nextDate = addDaysToDate(quest.date, daysToAdd);
+    const newQuest = {
+      ...quest,
+      id: Date.now() + Math.random(),
+      completed: false,
+      date: nextDate
+    };
+
+    setQuests(prev => [...prev, newQuest]);
+  };
+
   const addQuest = (questData) => {
+    const xp = getDifficultyXP(questData.difficulty, questData.manualXP);
+    const repeatCycle = getRepeatCycle(questData.category);
+    
     const newQuest = {
       ...questData,
       id: Date.now(),
       completed: false,
-      xp: questData.difficulty === 'Easy' ? 5 : questData.difficulty === 'Medium' ? 10 : questData.difficulty === 'Hard' ? 15 : 20
+      xp,
+      repeatCycle,
+      manualXP: questData.difficulty === 'special' ? questData.manualXP : null
     };
     setQuests(prev => [...prev, newQuest]);
   };

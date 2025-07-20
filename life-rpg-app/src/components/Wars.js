@@ -10,30 +10,31 @@ const Wars = ({ wars, weapons, addWar, updateWar, completeQuest }) => {
     rewardTitle: '',
     quests: [],
     weapons: [],
+    weaponsNeeded: [],
     strategy: ''
   });
   const [newWarQuest, setNewWarQuest] = useState({
     title: '',
-    difficulty: 'Easy',
+    difficulty: 'easy',
     stat: 'health'
   });
 
   const getDifficultyXP = (difficulty) => {
     switch (difficulty) {
-      case 'Easy': return 5;
-      case 'Medium': return 10;
-      case 'Hard': return 15;
-      case 'Badass Hard': return 20;
+      case 'easy': return 5;
+      case 'medium': return 10;
+      case 'hard': return 15;
+      case 'badass': return 20;
       default: return 5;
     }
   };
 
   const getDifficultyColor = (difficulty) => {
     switch (difficulty) {
-      case 'Easy': return 'text-green-400 bg-green-900';
-      case 'Medium': return 'text-yellow-400 bg-yellow-900';
-      case 'Hard': return 'text-orange-400 bg-orange-900';
-      case 'Badass Hard': return 'text-red-400 bg-red-900';
+      case 'easy': return 'text-green-400 bg-green-900';
+      case 'medium': return 'text-yellow-400 bg-yellow-900';
+      case 'hard': return 'text-orange-400 bg-orange-900';
+      case 'badass': return 'text-red-400 bg-red-900';
       default: return 'text-gray-400 bg-gray-900';
     }
   };
@@ -51,7 +52,7 @@ const Wars = ({ wars, weapons, addWar, updateWar, completeQuest }) => {
       }));
       setNewWarQuest({
         title: '',
-        difficulty: 'Easy',
+        difficulty: 'easy',
         stat: 'health'
       });
     }
@@ -74,6 +75,7 @@ const Wars = ({ wars, weapons, addWar, updateWar, completeQuest }) => {
         rewardTitle: '',
         quests: [],
         weapons: [],
+        weaponsNeeded: [],
         strategy: ''
       });
       setShowAddWarModal(false);
@@ -163,6 +165,7 @@ const Wars = ({ wars, weapons, addWar, updateWar, completeQuest }) => {
             {[
               { id: 'quests', label: 'Quests', icon: '📜' },
               { id: 'weapons', label: 'Arsenal', icon: '🗡' },
+              { id: 'weaponsneeded', label: 'Needed', icon: '🎯' },
               { id: 'strategy', label: 'Strategy', icon: '📋' }
             ].map(tab => (
               <button
@@ -257,6 +260,50 @@ const Wars = ({ wars, weapons, addWar, updateWar, completeQuest }) => {
                         </div>
                       );
                     })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Weapons Needed Tab */}
+            {activeWarTab === 'weaponsneeded' && (
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold text-fantasy-gold">Weapons Needed</h3>
+                {war.weaponsNeeded && war.weaponsNeeded.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {war.weaponsNeeded.map(weaponId => {
+                      const weapon = weapons.find(w => w.id === weaponId);
+                      if (!weapon) return null;
+                      return (
+                        <div
+                          key={weapon.id}
+                          className={`rounded-lg p-4 border ${
+                            weapon.obtained
+                              ? 'bg-green-900 bg-opacity-30 border-green-600'
+                              : 'bg-red-900 bg-opacity-30 border-red-600'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center space-x-3">
+                              <span className="text-2xl">{getWeaponIcon(weapon.type)}</span>
+                              <h4 className="font-semibold">{weapon.name}</h4>
+                            </div>
+                            <span className={`text-sm ${weapon.obtained ? 'text-green-400' : 'text-red-400'}`}>
+                              {weapon.obtained ? '✅ Obtained' : '❌ Needed'}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-300">{weapon.description}</p>
+                          <div className="mt-2 text-xs text-fantasy-gold">
+                            {weapon.type}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-400">
+                    <div className="text-4xl mb-2">🎯</div>
+                    <p>No weapons needed for this war</p>
                   </div>
                 )}
               </div>
@@ -402,6 +449,45 @@ const Wars = ({ wars, weapons, addWar, updateWar, completeQuest }) => {
                 />
               </div>
 
+              {/* Weapons Needed */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Weapons Needed</label>
+                <div className="space-y-2">
+                  {weapons.map(weapon => (
+                    <label key={weapon.id} className="flex items-center space-x-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={newWar.weaponsNeeded.includes(weapon.id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setNewWar(prev => ({
+                              ...prev,
+                              weaponsNeeded: [...prev.weaponsNeeded, weapon.id]
+                            }));
+                          } else {
+                            setNewWar(prev => ({
+                              ...prev,
+                              weaponsNeeded: prev.weaponsNeeded.filter(id => id !== weapon.id)
+                            }));
+                          }
+                        }}
+                        className="w-4 h-4 text-fantasy-blue bg-fantasy-purple border-fantasy-purple rounded focus:ring-fantasy-blue"
+                      />
+                      <div className="flex items-center space-x-2">
+                        <span className="text-lg">{getWeaponIcon(weapon.type)}</span>
+                        <span className="text-white">{weapon.name}</span>
+                        <span className={`text-xs px-2 py-1 rounded ${weapon.obtained ? 'bg-green-900 text-green-400' : 'bg-red-900 text-red-400'}`}>
+                          {weapon.obtained ? 'Obtained' : 'Needed'}
+                        </span>
+                      </div>
+                    </label>
+                  ))}
+                  {weapons.length === 0 && (
+                    <p className="text-gray-400 text-sm">No weapons available. Create some in the Weapons tab first.</p>
+                  )}
+                </div>
+              </div>
+
               {/* War Quests */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">War Quests</label>
@@ -439,10 +525,10 @@ const Wars = ({ wars, weapons, addWar, updateWar, completeQuest }) => {
                         onChange={(e) => setNewWarQuest({...newWarQuest, difficulty: e.target.value})}
                         className="bg-fantasy-purple bg-opacity-30 border border-fantasy-purple rounded px-2 py-1 text-white text-sm"
                       >
-                        <option value="Easy" className="bg-fantasy-dark">Easy</option>
-                        <option value="Medium" className="bg-fantasy-dark">Medium</option>
-                        <option value="Hard" className="bg-fantasy-dark">Hard</option>
-                        <option value="Badass Hard" className="bg-fantasy-dark">Badass Hard</option>
+                        <option value="easy" className="bg-fantasy-dark">Easy</option>
+                        <option value="medium" className="bg-fantasy-dark">Medium</option>
+                        <option value="hard" className="bg-fantasy-dark">Hard</option>
+                        <option value="badass" className="bg-fantasy-dark">Badass Hard</option>
                       </select>
                       <select
                         value={newWarQuest.stat}
